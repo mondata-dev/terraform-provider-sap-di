@@ -58,6 +58,24 @@ func (d *factsheetDataSource) Metadata(_ context.Context, req datasource.Metadat
 
 // Schema defines the schema for the data source.
 func (d *factsheetDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+	descriptionsObj := schema.ListNestedAttribute{
+		Description: "Descriptions of the factsheet.",
+		Computed:    true,
+		NestedObject: schema.NestedAttributeObject{
+			Attributes: map[string]schema.Attribute{
+				"origin": schema.StringAttribute{
+					Computed: true,
+				},
+				"type": schema.StringAttribute{
+					Computed: true,
+				},
+				"value": schema.StringAttribute{
+					Computed: true,
+				},
+			},
+		},
+	}
+
 	resp.Schema = schema.Schema{
 		Description: "Fetches a factsheet.",
 		Attributes: map[string]schema.Attribute{
@@ -82,6 +100,7 @@ func (d *factsheetDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 						Description: "Connection ID for the factsheet.",
 						Required:    true,
 					},
+					"descriptions": descriptionsObj,
 				},
 			},
 		},
@@ -96,9 +115,17 @@ type factsheetDataSourceModel struct {
 
 // factsheetModel maps factsheet schema data.
 type factsheetMetadataModel struct {
-	Name         types.String `tfsdk:"name"`
-	Uri          types.String `tfsdk:"uri"`
-	ConnectionId types.String `tfsdk:"connection_id"`
+	Name         types.String                `tfsdk:"name"`
+	Uri          types.String                `tfsdk:"uri"`
+	ConnectionId types.String                `tfsdk:"connection_id"`
+	Descriptions []factsheetDescriptionModel `tfsdk:"descriptions"`
+}
+
+// factsheetDescriptionModel maps factsheet description schema data.
+type factsheetDescriptionModel struct {
+	Origin types.String `tfsdk:"origin"`
+	Type   types.String `tfsdk:"type"`
+	Value  types.String `tfsdk:"value"`
 }
 
 // Read refreshes the Terraform state with the latest data.
@@ -135,6 +162,15 @@ func (d *factsheetDataSource) Read(ctx context.Context, req datasource.ReadReque
 		Name:         types.StringValue(factsheet.Metadata.Name),
 		Uri:          types.StringValue(factsheet.Metadata.Uri),
 		ConnectionId: types.StringValue(factsheet.Metadata.ConnectionId),
+		Descriptions: []factsheetDescriptionModel{},
+	}
+
+	for _, desc := range factsheet.Metadata.Descriptions {
+		state.Metadata.Descriptions = append(state.Metadata.Descriptions, factsheetDescriptionModel{
+			Origin: types.StringValue(desc.Origin),
+			Type:   types.StringValue(desc.Type),
+			Value:  types.StringValue(desc.Value),
+		})
 	}
 
 	state.ID = types.StringValue("placeholder")
