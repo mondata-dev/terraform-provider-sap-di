@@ -9,7 +9,8 @@ import (
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
-	"github.com/hashicorp/terraform-provider-scaffolding-framework/internal/provider"
+
+	"github.com/mondata-dev/terraform-provider-sap-di/internal/provider"
 )
 
 // Run "go generate" to format example terraform files and generate the docs for the registry/website
