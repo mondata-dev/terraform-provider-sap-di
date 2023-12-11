@@ -8,6 +8,7 @@ type Factsheet struct {
 type FactsheetMetadata struct {
 	Name         string                 `json:"name"`
 	Uri          string                 `json:"uri"`
+	ConnectionId string                 `json:"connectionId"`
 	Descriptions []FactsheetDescription `json:"descriptions"`
 }
 

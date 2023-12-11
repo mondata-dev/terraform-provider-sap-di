@@ -4,10 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 // GetFactsheet - Returns specific factsheet
 func (c *Client) GetFactsheet(connection string, dataset string) (*Factsheet, error) {
+	// replace forward slashes with %2F
+	dataset = strings.Replace(dataset, "/", "%2F", -1)
+
 	req, err := http.NewRequest(
 		"GET",
 		fmt.Sprintf(

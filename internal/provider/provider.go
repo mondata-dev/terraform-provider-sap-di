@@ -46,7 +46,7 @@ type sapDiProviderModel struct {
 
 // Metadata returns the provider type name.
 func (p *sapDiProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
-	resp.TypeName = "sapDi"
+	resp.TypeName = "sapdi"
 	resp.Version = p.version
 }
 
@@ -203,7 +203,9 @@ func (p *sapDiProvider) Configure(ctx context.Context, req provider.ConfigureReq
 
 // DataSources defines the data sources implemented in the provider.
 func (p *sapDiProvider) DataSources(_ context.Context) []func() datasource.DataSource {
-	return nil
+	return []func() datasource.DataSource{
+		NewFactsheetDataSource,
+	}
 }
 
 // Resources defines the resources implemented in the provider.

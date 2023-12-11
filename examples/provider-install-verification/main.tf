@@ -1,9 +1,12 @@
 terraform {
   required_providers {
-    sap-di = {
+    sapdi = {
       source = "mondata.de/terraform/sap-di"
     }
   }
 }
 
-provider "sap-di" {}
+provider "sapdi" {
+}
+
+data "sapdi_factsheet" "test" {}
