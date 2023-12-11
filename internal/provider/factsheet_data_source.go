@@ -103,6 +103,24 @@ func (d *factsheetDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 					"descriptions": descriptionsObj,
 				},
 			},
+
+			"columns": schema.ListNestedAttribute{
+				Description: "Columns of the factsheet.",
+				Computed:    true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							Description: "Name of the column.",
+							Computed:    true,
+						},
+						"type": schema.StringAttribute{
+							Description: "Type of the column.",
+							Computed:    true,
+						},
+						"descriptions": descriptionsObj,
+					},
+				},
+			},
 		},
 	}
 }
@@ -111,6 +129,7 @@ func (d *factsheetDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 type factsheetDataSourceModel struct {
 	ID       types.String           `tfsdk:"id"`
 	Metadata factsheetMetadataModel `tfsdk:"metadata"`
+	Columns  []factsheetColumnModel `tfsdk:"columns"`
 }
 
 // factsheetModel maps factsheet schema data.
@@ -118,6 +137,12 @@ type factsheetMetadataModel struct {
 	Name         types.String                `tfsdk:"name"`
 	Uri          types.String                `tfsdk:"uri"`
 	ConnectionId types.String                `tfsdk:"connection_id"`
+	Descriptions []factsheetDescriptionModel `tfsdk:"descriptions"`
+}
+
+type factsheetColumnModel struct {
+	Name         types.String                `tfsdk:"name"`
+	Type         types.String                `tfsdk:"type"`
 	Descriptions []factsheetDescriptionModel `tfsdk:"descriptions"`
 }
 
@@ -171,6 +196,24 @@ func (d *factsheetDataSource) Read(ctx context.Context, req datasource.ReadReque
 			Type:   types.StringValue(desc.Type),
 			Value:  types.StringValue(desc.Value),
 		})
+	}
+
+	for _, column := range factsheet.Columns {
+		col := factsheetColumnModel{
+			Name:         types.StringValue(column.Name),
+			Type:         types.StringValue(column.Type),
+			Descriptions: []factsheetDescriptionModel{},
+		}
+
+		for _, desc := range column.Descriptions {
+			col.Descriptions = append(col.Descriptions, factsheetDescriptionModel{
+				Origin: types.StringValue(desc.Origin),
+				Type:   types.StringValue(desc.Type),
+				Value:  types.StringValue(desc.Value),
+			})
+		}
+
+		state.Columns = append(state.Columns, col)
 	}
 
 	state.ID = types.StringValue("placeholder")
