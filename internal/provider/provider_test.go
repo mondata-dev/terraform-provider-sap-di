@@ -7,14 +7,14 @@ import (
 
 const (
 	// providerConfig is a shared configuration to combine with the actual
-	// test configuration so the HashiCups client is properly configured.
-	// It is also possible to use the HASHICUPS_ environment variables instead,
+	// test configuration so the SAP DI client is properly configured.
+	// It is also possible to use the SAP_DI_ environment variables instead,
 	// such as updating the Makefile and running the testing through that tool.
 	providerConfig = `
-provider "hashicups" {
+provider "sapdi" {
   username = "admin"
   password = "test123"
-  host     = "http://localhost:12345"
+  host     = "http://localhost:8080"
 }
 `
 )
@@ -25,6 +25,6 @@ var (
 	// CLI command executed to create a provider server to which the CLI can
 	// reattach.
 	testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
-		"hashicups": providerserver.NewProtocol6WithError(New("test")()),
+		"sapdi": providerserver.NewProtocol6WithError(New("test")()),
 	}
 )

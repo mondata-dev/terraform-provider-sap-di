@@ -1,0 +1,55 @@
+{
+  "columns": [
+    {
+      "name": "MANDT",
+      "type": "STRING",
+      "length": 3,
+      "descriptions": [
+        {
+          "origin": "REMOTE",
+          "type": "SHORT",
+          "value": "Client"
+        }
+      ],
+      "properties": [],
+      "uniqueGroups": "1",
+      "templateType": "string"
+    },
+    {
+      "name": "ANZST",
+      "type": "INTEGER",
+      "length": 2,
+      "descriptions": [
+        {
+          "origin": "REMOTE",
+          "type": "SHORT",
+          "value": "Number of Characters"
+        }
+      ],
+      "properties": [],
+      "templateType": "int16"
+    }
+  ],
+  "metadata": {
+    "colCount": 2,
+    "rowCount": 0,
+    "sampleRowCount": 0,
+    "name": "ABCD",
+    "uri": "/XYZ/012/ABCD",
+    "type": "TABLE",
+    "connectionId": "P40_XYZ",
+    "connectionType": "ABAP",
+    "descriptions": [
+      {
+        "origin": "REMOTE",
+        "type": "SHORT",
+        "value": "Characteristic"
+      }
+    ],
+    "uniqueKeys": [],
+    "properties": [],
+    "sampled": false
+  },
+  "compressed": false,
+  "version": "1.0.0"
+}
