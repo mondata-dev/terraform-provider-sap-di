@@ -2,12 +2,11 @@ package sap_di
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"time"
 )
 
-// Client -
 type Client struct {
 	HostURL    string
 	HTTPClient *http.Client
@@ -15,20 +14,17 @@ type Client struct {
 	Auth       AuthStruct
 }
 
-// AuthStruct -
 type AuthStruct struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
-// AuthResponse -
 type AuthResponse struct {
-	UserID   int    `json:"user_id`
-	Username string `json:"username`
+	UserID   int    `json:"user_id"`
+	Username string `json:"username"`
 	Token    string `json:"token"`
 }
 
-// NewClient -
 func NewClient(host, username, password *string) (*Client, error) {
 	c := Client{
 		HTTPClient: &http.Client{Timeout: 10 * time.Second},
@@ -71,7 +67,7 @@ func (c *Client) doRequest(req *http.Request, authToken *string) ([]byte, error)
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}

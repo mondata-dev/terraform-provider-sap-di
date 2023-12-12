@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// GetFactsheet - Returns specific factsheet
+// GetFactsheet - Returns a specific factsheet.
 func (c *Client) GetFactsheet(connection string, dataset string) (*Factsheet, error) {
 	// replace forward slashes with %2F
 	dataset = strings.Replace(dataset, "/", "%2F", -1)
