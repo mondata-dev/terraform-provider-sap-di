@@ -5,24 +5,18 @@ import (
 	"io"
 	"net/http"
 	"time"
+	"encoding/base64"
 )
 
 type Client struct {
 	HostURL    string
 	HTTPClient *http.Client
-	Token      string
 	Auth       AuthStruct
 }
 
 type AuthStruct struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
-}
-
-type AuthResponse struct {
-	UserID   int    `json:"user_id"`
-	Username string `json:"username"`
-	Token    string `json:"token"`
 }
 
 func NewClient(host, username, password *string) (*Client, error) {
@@ -42,24 +36,18 @@ func NewClient(host, username, password *string) (*Client, error) {
 		Password: *password,
 	}
 
-	// ar, err := c.SignIn()
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// c.Token = ar.Token
-
 	return &c, nil
 }
 
+func basicAuth(username, password string) string {
+  auth := username + ":" + password
+  return base64.StdEncoding.EncodeToString([]byte(auth))
+}
+
 func (c *Client) doRequest(req *http.Request, authToken *string) ([]byte, error) {
-	token := c.Token
-
-	if authToken != nil {
-		token = *authToken
-	}
-
-	req.Header.Set("Authorization", token)
+	// Note: this will have problems if there are redirects
+	// see https://stackoverflow.com/a/31309385
+	req.Header.Set("Authorization", "Basic " + basicAuth(c.Auth.Username, c.Auth.Password))
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
