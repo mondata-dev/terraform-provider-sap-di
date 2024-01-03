@@ -26,7 +26,7 @@ func (c *Client) GetFactsheet(connection string, dataset string) (*Factsheet, er
 		return nil, err
 	}
 
-	body, err := c.doRequest(req, nil)
+	body, err := c.doRequest(req)
 	if err != nil {
 		return nil, err
 	}

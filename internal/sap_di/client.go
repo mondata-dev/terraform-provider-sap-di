@@ -1,11 +1,11 @@
 package sap_di
 
 import (
+	"encoding/base64"
 	"fmt"
 	"io"
 	"net/http"
 	"time"
-	"encoding/base64"
 )
 
 type Client struct {
@@ -40,14 +40,14 @@ func NewClient(host, username, password *string) (*Client, error) {
 }
 
 func basicAuth(username, password string) string {
-  auth := username + ":" + password
-  return base64.StdEncoding.EncodeToString([]byte(auth))
+	auth := username + ":" + password
+	return base64.StdEncoding.EncodeToString([]byte(auth))
 }
 
-func (c *Client) doRequest(req *http.Request, authToken *string) ([]byte, error) {
+func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 	// Note: this will have problems if there are redirects
 	// see https://stackoverflow.com/a/31309385
-	req.Header.Set("Authorization", "Basic " + basicAuth(c.Auth.Username, c.Auth.Password))
+	req.Header.Set("Authorization", "Basic "+basicAuth(c.Auth.Username, c.Auth.Password))
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
